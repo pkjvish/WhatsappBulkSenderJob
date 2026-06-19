@@ -1,0 +1,3 @@
+This is the attachment file content.
+You can put any text, data, or information here.
+It will be sent to all recipients along with their personal message.

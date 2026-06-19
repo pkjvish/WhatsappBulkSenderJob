@@ -1,0 +1,40 @@
+Date: 16/6/2026
+Time: 18:12
+Phone Number: +919702309081
+Message: "Hi Rahul, your order #1021 is ready for pickup! 🎉"
+--------------------
+Date: 16/6/2026
+Time: 18:15
+Phone Number: +918655072885
+Message: "Hi Priya, your appointment is confirmed for tomorrow at 10 AM. 📅"
+--------------------
+Date: 16/6/2026
+Time: 18:23
+Phone Number: +919702309081
+Message: "Hi Pankaj, this is a test message1"
+--------------------
+Date: 16/6/2026
+Time: 18:25
+Phone Number: +918655072885
+Message: "Hi Pankaj, this is a test message2"
+--------------------
+Date: 16/6/2026
+Time: 18:33
+Phone Number: +919702309081
+Message: "Hi Pankaj, this is a test message1"
+--------------------
+Date: 16/6/2026
+Time: 18:35
+Phone Number: +918655072885
+Message: "Hi Pankaj, this is a test message2"
+--------------------
+Date: 16/6/2026
+Time: 18:40
+Phone Number: +919702309081
+Message: "Hi Pankaj, this is a test message1"
+--------------------
+Date: 16/6/2026
+Time: 18:54
+Phone Number: +919702309081
+Message: "Hi Pankaj, this is a test message1"
+--------------------
