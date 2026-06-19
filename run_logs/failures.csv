@@ -1,0 +1,14 @@
+timestamp,index,number,reason,screenshot
+2026-06-19T09:09:48.181234,1,+919702309081,file: automation error,run_logs\screenshot_1_919702309081.png
+2026-06-19T09:10:16.907804,2,+918655072885,file: automation error,run_logs\screenshot_2_918655072885.png
+2026-06-19T09:10:46.999893,3,+919561191950,file: automation error,run_logs\screenshot_3_919561191950.png
+2026-06-19T09:11:15.913992,4,+919137871533,file: automation error,run_logs\screenshot_4_919137871533.png
+2026-06-19T09:17:23.152711,1,+919702309081,file: automation error,run_logs\screenshot_1_919702309081.png
+2026-06-19T09:17:52.356863,2,+918655072885,file: automation error,run_logs\screenshot_2_918655072885.png
+2026-06-19T09:18:21.762650,3,+919561191950,file: automation error,run_logs\screenshot_3_919561191950.png
+2026-06-19T09:18:50.928904,4,+919137871533,file: automation error,run_logs\screenshot_4_919137871533.png
+2026-06-19T09:24:10.528690,1,+919702309081,file: automation error,run_logs\screenshot_1_919702309081.png
+2026-06-19T09:24:39.649511,2,+918655072885,file: automation error,run_logs\screenshot_2_918655072885.png
+2026-06-19T09:25:08.778976,3,+919561191950,file: automation error,run_logs\screenshot_3_919561191950.png
+2026-06-19T09:25:37.882905,4,+919137871533,file: automation error,run_logs\screenshot_4_919137871533.png
+2026-06-19T10:13:21.077157,3,+919561191950,attachment_failed,

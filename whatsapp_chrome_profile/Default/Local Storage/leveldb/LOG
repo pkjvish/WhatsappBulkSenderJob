@@ -1,0 +1,6 @@
+2026/06/19-15:36:44.039 a484 Reusing MANIFEST C:\pankaj\Py\WhatsappBulkSenderJob\whatsapp_chrome_profile\Default\Local Storage\leveldb/MANIFEST-000001
+2026/06/19-15:36:44.051 a484 Recovering log #4
+2026/06/19-15:36:44.058 a484 Reusing old log C:\pankaj\Py\WhatsappBulkSenderJob\whatsapp_chrome_profile\Default\Local Storage\leveldb/000004.log 
+2026/06/19-15:39:44.855 7b5c Level-0 table #8: started
+2026/06/19-15:39:44.868 7b5c Level-0 table #8: 19049 bytes OK
+2026/06/19-15:39:44.873 7b5c Delete type=0 #4
