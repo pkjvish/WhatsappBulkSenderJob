@@ -12,3 +12,7 @@ timestamp,index,number,reason,screenshot
 2026-06-19T09:25:08.778976,3,+919561191950,file: automation error,run_logs\screenshot_3_919561191950.png
 2026-06-19T09:25:37.882905,4,+919137871533,file: automation error,run_logs\screenshot_4_919137871533.png
 2026-06-19T10:13:21.077157,3,+919561191950,attachment_failed,
+2026-06-19T11:23:35.931659,3,+919561191950,attachment_failed,
+2026-06-19T11:44:34.888724,1,+919702309081,attachment_failed,run_logs\screenshot_1_919702309081.png
+2026-06-19T11:47:11.841723,2,+918655072885,attachment_failed,run_logs\screenshot_2_918655072885.png
+2026-06-19T11:49:49.764825,3,+919561191950,attachment_failed,run_logs\screenshot_3_919561191950.png

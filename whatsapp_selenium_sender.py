@@ -52,6 +52,7 @@ import csv
 import time
 import argparse
 import pyperclip
+import pyautogui
 from pathlib import Path
 from datetime import datetime
 from typing import Optional
@@ -70,7 +71,7 @@ from selenium.common.exceptions import TimeoutException
 # ════════════════════════════════════════════════════════════════
 
 INPUT_FILE          = "numberMessage.csv"
-ATTACHMENT_FILE     = "resume.pdf"                                   # set to "" to disable
+ATTACHMENT_FILE     = "abc.txt"                                   # set to "" to disable
 CHROME_PROFILE_DIR  = os.path.abspath("whatsapp_chrome_profile")  # keeps you logged in
 
 DELAY_BETWEEN_MESSAGES = 8     # seconds between recipients (keep generous to avoid WA limits)
@@ -294,49 +295,72 @@ def find_document_input(driver):
     WhatsApp Web has *multiple* hidden <input type="file"> elements on the
     page — one for "Photos & videos" (accept="image/*,video/*"), one for
     "Document" (accept="*" / unrestricted), sometimes more (camera, sticker).
-    A plain `input[type="file"]` selector grabs the first one in DOM order,
-    which is usually the Photos & Videos input — so a non-image file sent
-    to it gets rejected by WhatsApp with a "not supported" error.
+    A plain `input[type="file"]` selector grabs whichever one happens to be
+    first in DOM order, which is unreliable — so a non-image file can land
+    on the Photos/Videos input and get rejected as "not supported".
 
-    This picks the input whose accept attribute is NOT limited to images
-    or video, which is the Document input.
+    We scan in *reverse* DOM order (most recently mounted first) and pick
+    the first input whose accept attribute isn't limited to images/video —
+    this avoids accidentally grabbing a stale input left over from a
+    previous chat's attach menu.
     """
     inputs = driver.find_elements(By.CSS_SELECTOR, 'input[type="file"]')
     if not inputs:
         raise TimeoutException("No <input type='file'> elements found")
 
-    for inp in inputs:
+    print(f"      🔍 {len(inputs)} file input(s) found on the page:")
+    for i, inp in enumerate(inputs):
+        print(f"         [{i}] accept={inp.get_attribute('accept')!r}")
+
+    for inp in reversed(inputs):
         accept = (inp.get_attribute("accept") or "").lower()
         if "image" not in accept and "video" not in accept:
+            print(f"      ✅ Picked input with accept={inp.get_attribute('accept')!r}")
             return inp
 
-    # Fallback: if every input looked image/video-restricted, the Document
-    # input in current WhatsApp builds is most often the last one in the menu.
+    # Fallback: nothing looked unrestricted — use the most recently mounted one.
+    print("      ⚠️  No unrestricted input found — falling back to the last one.")
     return inputs[-1]
 
 
 def send_attachment(driver, abs_path: str) -> bool:
-    """Attach a file by sending its path directly to the Document file
-    input — no clicking through an OS file-picker dialog required."""
+    """
+    Attach a file via WhatsApp's Document option.
+
+    Clicking "Document" is necessary — WhatsApp only mounts the real
+    Document <input type="file"> into the page once that menu item is
+    clicked; without it, only the default Photos/Videos input exists,
+    which rejects non-image/video files as "not supported".
+
+    The catch: that click also opens a *native* OS file-picker dialog as
+    a side effect, since the click carries real user-activation through
+    Selenium. We don't need that dialog — we inject the file path
+    directly into the now-mounted input via send_keys — so right after
+    that we send a plain Escape keypress to close the now-redundant
+    dialog before it can linger and interfere with the next recipient.
+    This Escape press is the only OS-level action left in this script;
+    it's a generic keystroke, not screen-coordinate or image matching,
+    so it isn't affected by resolution, zoom, or theme.
+    """
     try:
         attach_btn = find_first(driver, SEL["attach_button"], clickable=True)
         attach_btn.click()
         time.sleep(1)
 
-        # Best-effort: clicking "Document" isn't strictly required since we
-        # target the correct hidden input directly below, but it nudges
-        # WhatsApp's UI into the expected state on some builds.
-        try:
-            doc_item = find_first(driver, SEL["doc_menu_item"], timeout=5)
-            doc_item.click()
-            time.sleep(1)
-        except TimeoutException:
-            pass
+        doc_item = find_first(driver, SEL["doc_menu_item"], clickable=True)
+        doc_item.click()
+        time.sleep(1.5)   # give the native dialog + the input time to appear
 
         file_input = find_document_input(driver)
         file_input.send_keys(abs_path)
-        time.sleep(2)   # let WhatsApp render the attachment preview
+        time.sleep(0.5)
 
+        # Dismiss the now-irrelevant native file dialog.
+        pyautogui.press("esc")
+        time.sleep(0.3)
+        pyautogui.press("esc")   # harmless if already closed; covers nested dialogs
+
+        time.sleep(2)   # let WhatsApp render the attachment preview
         send_btn = find_first(driver, SEL["send_button"], clickable=True)
         send_btn.click()
         return True
