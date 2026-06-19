@@ -289,19 +289,51 @@ def send_text_message(driver, message: str) -> bool:
         return False
 
 
+def find_document_input(driver):
+    """
+    WhatsApp Web has *multiple* hidden <input type="file"> elements on the
+    page — one for "Photos & videos" (accept="image/*,video/*"), one for
+    "Document" (accept="*" / unrestricted), sometimes more (camera, sticker).
+    A plain `input[type="file"]` selector grabs the first one in DOM order,
+    which is usually the Photos & Videos input — so a non-image file sent
+    to it gets rejected by WhatsApp with a "not supported" error.
+
+    This picks the input whose accept attribute is NOT limited to images
+    or video, which is the Document input.
+    """
+    inputs = driver.find_elements(By.CSS_SELECTOR, 'input[type="file"]')
+    if not inputs:
+        raise TimeoutException("No <input type='file'> elements found")
+
+    for inp in inputs:
+        accept = (inp.get_attribute("accept") or "").lower()
+        if "image" not in accept and "video" not in accept:
+            return inp
+
+    # Fallback: if every input looked image/video-restricted, the Document
+    # input in current WhatsApp builds is most often the last one in the menu.
+    return inputs[-1]
+
+
 def send_attachment(driver, abs_path: str) -> bool:
-    """Attach a file by sending its path directly to the hidden file
+    """Attach a file by sending its path directly to the Document file
     input — no clicking through an OS file-picker dialog required."""
     try:
         attach_btn = find_first(driver, SEL["attach_button"], clickable=True)
         attach_btn.click()
         time.sleep(1)
 
-        doc_item = find_first(driver, SEL["doc_menu_item"])
-        doc_item.click()
-        time.sleep(1)
+        # Best-effort: clicking "Document" isn't strictly required since we
+        # target the correct hidden input directly below, but it nudges
+        # WhatsApp's UI into the expected state on some builds.
+        try:
+            doc_item = find_first(driver, SEL["doc_menu_item"], timeout=5)
+            doc_item.click()
+            time.sleep(1)
+        except TimeoutException:
+            pass
 
-        file_input = find_first(driver, SEL["file_input"])
+        file_input = find_document_input(driver)
         file_input.send_keys(abs_path)
         time.sleep(2)   # let WhatsApp render the attachment preview
 
